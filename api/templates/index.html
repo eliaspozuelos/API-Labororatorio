@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>TASK UVG - 1</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand-lg navbar-dark bg-dark d-flex align-items-center">
+        <a class="d-flex align-items-center ms-3" style="text-decoration: none;">
+            <img src="/static/img/LogoTask.png" alt="Logo" class="logo-img " style="height: 50px; width: 50px; border-radius: 50%; transition: transform 0.3s ease;">
+            <span class="navbar-brand ms-2">TASKUVG</span>
+        </a>
+    
+        <!-- Botón de menú que aparece solo en pantallas pequeñas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <!-- Contenedor de los enlaces del menú -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Menú solo visible en pantallas pequeñas -->
+                <li class="nav-item">
+                    <a class="nav-link bg-dark d-sm-block d-lg-none" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menú
+                    </a>
+                    <ul class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item text-white" href="#createTaskSection">Crear Tarea</a></li>
+                        <li><a class="dropdown-item text-white" href="#taskListt">Lista de Tareas</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>                           
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Panel de Tareas</div>
+                        <a class="nav-link" href="#createTaskSection">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            Crear Tarea
+                        </a>
+                        <a class="nav-link" href="#taskListt"> 
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            Lista de Tareas
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4 text-center text-dark fw-bold display-5" id="createTaskSection">Panel de Tareas</h1>
+                    <div class="mt-4"></div>
+                    <div class="row">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 d-flex justify-content-center">
+                                <div class="card mb-4 shadow-sm" style="width: 100%;"> <!-- Asegurando que la tarjeta ocupe todo el ancho -->
+                                    <div class="card-header bg-primary text-white text-center" id="createTaskButton" onclick="toggleCreateTaskForm()" style="cursor: pointer;"> <!-- Centrado del texto del encabezado -->
+                                        <i class="fas fa-plus me-1"></i>
+                                        Crear Tarea
+                                    </div>
+                                    <div class="card-body"  id="createTaskFormContainer" style="display: none;">
+                                        <form id="createTaskForm" onsubmit="createTask(event)">
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">Título</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-pencil-alt"></i></span>
+                                                    <input type="text" class="form-control" id="title" placeholder="Escribe el título de la tarea" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Descripción</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                                    <input type="text" class="form-control" id="description" placeholder="Escribe una descripción de la tarea" required>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Crear Tarea</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                                          
+                        <div id="updateTaskFormContainer" style="display: none;">
+                            <div class="col-lg-6 d-flex justify-content-center"> <!-- Centrar el formulario -->
+                                <div class="card mb-4 shadow-sm" style="width: 100%;"> <!-- Tarjeta para el formulario -->
+                                    <div class="card-header bg-primary text-white text-center"> <!-- Encabezado centrado -->
+                                        <i class="fas fa-edit me-1"></i> <!-- Icono de editar -->
+                                        Actualizar Tarea
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="updateTaskForm">
+                                            <input type="hidden" id="updateTaskId"> <!-- Campo oculto para taskId -->
+                                            <div class="mb-3">
+                                                <label for="updateTitle" class="form-label">Título</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-pencil-alt"></i></span>
+                                                    <input type="text" class="form-control" id="updateTitle" placeholder="Ingrese el nuevo título" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="updateDescription" class="form-label">Descripción</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                                    <input type="text" class="form-control" id="updateDescription" placeholder="Ingrese la nueva descripción" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="updateStatus" class="form-label">Estado</label>
+                                                <select class="form-control" id="updateStatus" required>
+                                                    <option value="pendiente">Pendiente</option>
+                                                    <option value="en progreso">En Progreso</option>
+                                                    <option value="completado">Completado</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+                                            <button type="button" class="btn btn-secondary w-100 mt-2" onclick="cancelEdit()">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección para Tareas Creadas -->
+                        <div>
+                            <h1 id="taskListt" class="mt-4 text-center text-dark fw-bold display-5">Lista de Tareas</h1> <!-- Título sin enlace -->
+                            <div class="mt-4"></div>
+                            <div class="col-lg-12">
+                                <div class="row" id="taskList">
+                                    <!-- Dynamic task cards will appear here -->
+                                </div>
+                                    <!-- Mensaje que aparece si no hay tareas -->
+                                <div id="noTasksMessage" class="text-center text-muted mt-4" style="display: none;">
+                                    <p>No hay tareas disponibles.</p>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </main>
+            <footer class="py-4 bg-dark text-white mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted" style="font-size: 0.875rem;">&copy; 2023 Your Website. Todos los derechos reservados.</div>
+                        <div>
+                            <a href="#" class="text-white mx-2 text-decoration-none">Privacy Policy</a>
+                            <span class="text-white mx-2">•</span>
+                            <a href="#" class="text-white mx-2 text-decoration-none">Terms & Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>            
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
